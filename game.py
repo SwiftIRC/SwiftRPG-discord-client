@@ -12,7 +12,6 @@ from auth import *
 class Game:
     ssl_verify = True
     discord_privmsg = None
-    irc_privmsg = None
     config = {}
 
     def __init__(self, config):
@@ -23,9 +22,6 @@ class Game:
 
     def set_discord_privmsg(self, discord_privmsg):
         self.discord_privmsg = discord_privmsg
-
-    def set_irc_privmsg(self, irc_privmsg):
-        self.irc_privmsg = irc_privmsg
 
     def start(self):
         while True:
@@ -44,7 +40,6 @@ class Game:
         if target:
             command(target, response)
         else:
-            self.discord_target = command
             await command(response)
 
     async def process_private_response(self, command, target, response):
@@ -53,8 +48,7 @@ class Game:
         else:
             await target.send(response)
 
-    # The `target` parameter can be either a string (from IRC) or a function (from Discord)
-    async def command(self, auth: Auth, command: FunctionType, target, author: string, message: string):
+    async def command(self, auth: Auth, command: FunctionType, target: FunctionType, author: string, message: string):
         character = await auth.get_character(str(author))
         token = await auth.get_token(str(author))
         response = await self.game_controller.run(command, target, author, message, character, token)

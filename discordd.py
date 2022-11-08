@@ -52,8 +52,6 @@ class Discord:
 
     def close(self):
         global client
-        global irc
-        irc.set_running(False)
         asyncio.run_coroutine_threadsafe(client.close(), client.loop)
 
 
