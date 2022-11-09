@@ -12,7 +12,8 @@ logging.basicConfig(level=logging.INFO)
 thread_lock = None
 
 config = None
-client = discord.Client()
+intents = discord.Intents.default()
+client = discord.Client(intents=intents)
 server = None
 channels = {}
 game = None
@@ -27,7 +28,7 @@ class Discord:
         global game
         global auth
 
-        channels = {conf['CHANNELS'][channel]: channel for channel in conf['CHANNELS']}
+        channels = conf['CHANNELS']
 
         config = conf
         game = g

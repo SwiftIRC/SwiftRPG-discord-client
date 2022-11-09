@@ -37,16 +37,10 @@ class Game:
         return 100
 
     async def process_response(self, command, target, response):
-        if target:
-            command(target, response)
-        else:
-            await command(response)
+        await command(response)
 
     async def process_private_response(self, command, target, response):
-        if target != None:
-            command(target, response)
-        else:
-            await target.send(response)
+        await target.send(response)
 
     async def command(self, auth: Auth, command: FunctionType, target: FunctionType, author: string, message: string):
         character = await auth.get_character(str(author))
