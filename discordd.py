@@ -6,6 +6,7 @@ import concurrent.futures
 from asyncio import futures
 
 from discord import channel
+from discord import Message
 
 logging.basicConfig(level=logging.INFO)
 
@@ -13,6 +14,7 @@ thread_lock = None
 
 config = None
 intents = discord.Intents.default()
+intents.message_content = True
 client = discord.Client(intents=intents)
 server = None
 channels = {}
@@ -65,7 +67,7 @@ async def async_privmsg(target, message):
 
 
 @client.event
-async def on_message(message):
+async def on_message(message: Message):
     global config
     global client
     global channels
