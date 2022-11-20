@@ -46,7 +46,7 @@ class Game:
         character = await auth.get_character(str(author))
         token = await auth.get_token(str(author))
         response = await self.game_controller.run(command, target, author, message, character, token)
-        if len(response) > 0:
+        if response != None and len(response) > 0:
             await self.process_response(command, target, response)
 
     #     split = message.split()
