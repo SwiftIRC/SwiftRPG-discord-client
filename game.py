@@ -37,7 +37,8 @@ class Game:
         return 100
 
     async def process_response(self, command, target, response):
-        await command(response)
+        if response != None and len(response) > 0:
+            await command(response)
 
     async def process_private_response(self, command, target, response):
         await target.send(response)
@@ -46,8 +47,7 @@ class Game:
         character = await auth.get_character(str(author))
         token = await auth.get_token(str(author))
         response = await self.game_controller.run(command, target, author, message, character, token)
-        if response != None and len(response) > 0:
-            await self.process_response(command, target, response)
+        await self.process_response(command, target, response)
 
     #     split = message.split()
     #     if message[1:] == 'foo':
