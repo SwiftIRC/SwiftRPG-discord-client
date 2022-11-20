@@ -87,7 +87,7 @@ async def on_message(message: Message):
     if content.startswith('+') or content.startswith('-') or content.startswith('!') or content.startswith('@') or content.startswith('.'):
         nick = '{}#{}'.format(message.author.name,
                               message.author.discriminator)
-        if "{}".format(message.channel) == "Direct Message with {}".format(nick):
+        if "{}".format(message.channel).startswith("Direct Message with"):
             split = content.split()
             if split[0][1:] == "login":
                 if len(split) != 3:
