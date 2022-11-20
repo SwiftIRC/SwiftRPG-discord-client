@@ -85,7 +85,8 @@ async def on_message(message: Message):
         content += ' ' + message.attachments[0].url
 
     if content.startswith('+') or content.startswith('-') or content.startswith('!') or content.startswith('@') or content.startswith('.'):
-        nick = '{}'.format(message.author)
+        nick = '{}#{}'.format(message.author.name,
+                              message.author.discriminator)
         if "{}".format(message.channel) == "Direct Message with {}".format(nick):
             split = content.split()
             if split[0][1:] == "login":
