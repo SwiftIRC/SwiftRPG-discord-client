@@ -16,13 +16,11 @@ print("Loading SwiftRPG...")
 
 load_dotenv()
 
-discord_thread_lock = threading.Lock()
-game_thread_lock = threading.Lock()
-
 config = {
     'DISCORD_TOKEN': os.getenv('DISCORD_TOKEN'),
     'CHANNELS': json.loads(os.getenv('CHANNELS')),
     'HOSTNAME': os.getenv('HOSTNAME'),
+    'OWNER': os.getenv('OWNER'),
 }
 
 
@@ -30,7 +28,6 @@ def discord(argv, game, auth):
     print("Connecting to Discord... ({})".format(argv))
 
     discord_process = Discord(config, game, auth)
-    discord_process.set_thread_lock(discord_thread_lock)
 
     discord_process.run()
 

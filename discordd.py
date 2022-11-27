@@ -5,17 +5,17 @@ from asyncio import coroutines
 import concurrent.futures
 from asyncio import futures
 
+from discord import app_commands
 from discord import channel
 from discord import Message
 
 logging.basicConfig(level=logging.INFO)
 
-thread_lock = None
-
 config = None
 intents = discord.Intents.default()
 intents.message_content = True
 client = discord.Client(intents=intents)
+tree = app_commands.CommandTree(client)
 server = None
 channels = {}
 game = None
@@ -25,7 +25,6 @@ auth = None
 class Discord:
     def __init__(self, conf, g, a):
         global config
-        global thread_lock
         global channels
         global game
         global auth
@@ -36,10 +35,6 @@ class Discord:
         game = g
         game.set_discord_privmsg(self.privmsg)
         auth = a
-
-    def set_thread_lock(self, lock):
-        global thread_lock
-        thread_lock = lock
 
     def privmsg(self, target, message):
         global client
@@ -71,7 +66,6 @@ async def on_message(message: Message):
     global config
     global client
     global channels
-    global thread_lock
     global game
     global auth
 
@@ -79,7 +73,6 @@ async def on_message(message: Message):
     if message.author == client.user:
         return
 
-    # with thread_lock:
     content = message.clean_content
     if len(message.attachments) > 0:
         content += ' ' + message.attachments[0].url
@@ -120,6 +113,10 @@ async def on_message(message: Message):
                     await message.channel.send("Not currently logged in.")
             elif content[1:] == "help":
                 await message.author.send("{}/help".format(config['HOSTNAME']))
+            elif content[1:] == "sync":
+                if nick == config['OWNER']:
+                    await tree.sync()
+                    await message.channel.send("Synced commands.")
         elif message.channel.id in channels:
             if content[1:] == "help":
                 await message.author.send("{}/help".format(config['HOSTNAME']))
@@ -130,3 +127,25 @@ async def on_message(message: Message):
             # print('[Discord] [#{}] CMD DETECTED: ({}) {}'.format(
             #     message.channel, nick, content))
             await game.command(auth, message.channel.send, None, message.author, content)
+
+
+@tree.command(name='pickpocket', description='Pickpocket an NPC')
+async def _pickpocket(interaction):
+    await slash_command(interaction)
+
+
+@tree.command(name='chop', description='Chop down a tree.')
+async def _chop(interaction):
+    await slash_command(interaction)
+
+
+async def slash_command(interaction):
+    global game
+    global auth
+
+    if not auth.check(interaction.user):
+        await interaction.respond("You are not logged in.")
+        return
+
+    if interaction.channel_id in channels:
+        await game.command(auth, interaction.response.send_message, interaction, interaction.user, '+{}'.format(interaction.data.get('name')))
