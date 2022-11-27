@@ -38,7 +38,7 @@ class Game:
 
     async def process_response(self, command, target, response):
         if response != None and len(response) > 0:
-            await command(response)
+            await command(content=response)
 
     async def process_private_response(self, command, target, response):
         await target.send(response)

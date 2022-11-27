@@ -147,5 +147,7 @@ async def slash_command(interaction):
         await interaction.response.send_message("You are not logged in.")
         return
 
+    await interaction.response.send_message("loading...")
+
     if interaction.channel_id in channels:
-        await game.command(auth, interaction.response.send_message, interaction, interaction.user, '+{}'.format(interaction.data.get('name')))
+        await game.command(auth, interaction.edit_original_response, None, interaction.user, '+{}'.format(interaction.data.get('name')))
