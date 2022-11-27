@@ -144,7 +144,7 @@ async def slash_command(interaction):
     global auth
 
     if not auth.check(interaction.user):
-        await interaction.respond("You are not logged in.")
+        await interaction.response.send_message("You are not logged in.")
         return
 
     if interaction.channel_id in channels:
